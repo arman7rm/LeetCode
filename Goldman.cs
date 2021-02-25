@@ -5,6 +5,16 @@ namespace LeetCode
 {
     public class Goldman
     {
+        public static bool reachingPoints(int sx, int sy, int tx, int ty)
+        {
+            if (sx == tx && sy == ty)
+                return true;
+
+            if (sx > tx || sy > ty)
+                return false;
+
+            return (reachingPoints(sx + sy, sy, tx, ty) || reachingPoints(sx, sx + sy, tx, ty));
+        }
         public static int TrappingRainwater(int[] height)
         {
             List<int> waterLevel = new List<int>();

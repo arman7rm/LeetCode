@@ -20,7 +20,7 @@ namespace LeetCode
             y[8] = new int[] { 1, 100 };
             y[9] = new int[] { 7, 100 };
             // Display the number of command line arguments.
-            Goldman.HighFive(y);
+            Console.WriteLine(Goldman.reachingPoints(1,1,3,5));
         }
     }
 }
