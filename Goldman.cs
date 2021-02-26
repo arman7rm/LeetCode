@@ -13,7 +13,25 @@ namespace LeetCode
                 if (pool[i] == '8') last = i;
             }
             StringBuilder temp = new StringBuilder();
-            return "";
+            return 5;
+        }
+
+        public static long problem2(List<int> arr)
+        {
+            long count = 0;
+            long[] temp = new long[arr.Count];
+            for (int i = 0; i < arr.Count; i++)
+            {
+                for (int j = i; j >= 0; j--)
+                {
+                    if (arr[i] < arr[j])
+                    {
+                        temp[i]++;
+                        count += temp[j];
+                    }
+                }
+            }
+            return count;
         }
         public static int Compress(char[] chars)
         {
