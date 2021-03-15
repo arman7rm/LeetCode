@@ -8,7 +8,7 @@ namespace LeetCode
         static void Main(string[] args)
         {
             // Display the number of command line arguments.
-            Console.WriteLine(AlgoEasy.mskcc2(-8000));
+            Console.WriteLine(AlgoEasy.dpFib(19));
         }
     }
 }

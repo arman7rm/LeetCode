@@ -5,29 +5,37 @@ namespace LeetCode
 {
     class AlgoEasy
     {
+
+        public static int dpFib(int n)
+        {
+            return dpFib(n, new int[n + 1]);
+        }
+
+        public static int dpFib(int n, int[] fibs)
+        {
+            if (n == 0 || n == 1) return n;
+            if (fibs[n] == 0) fibs[n] = dpFib(n - 1) + dpFib(n - 2);
+            return fibs[n];
+        }
         public static int mskcc(string S)
         {
             bool change = S[0] == 'A' ? false : true;
-            int i = 1;
-            int minDel = Int32.MaxValue;
+            int l = 0, r = S.Length-1;
             int del = 0;
-            while (i < S.Length)
+            while (l > r)
             {
-                if (change)
+                if (S[l] == 'A')
                 {
-                    if (S[i] == 'A')
-                    {
-                        del++;
-                    }
+                    l++;
                 }
                 else
                 {
-                    if (S[i] == 'B')
-                    {
-                        del++;
-                    }
+                    
                 }
-                i++;
+                if (S[r] == 'B')
+                {
+                    r--;
+                }
             }
             return del;
         }
