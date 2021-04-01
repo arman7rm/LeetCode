@@ -7,8 +7,9 @@ namespace LeetCode
     class Program {
         static void Main(string[] args)
         {
-            // Display the number of command line arguments.
-            Console.WriteLine(AlgoEasy.dpFib(19));
+            string a = "abcavc";
+            string b = "bcacva";
+            Console.WriteLine(CTCI.checkPermutation2(a,b));
         }
     }
 }

@@ -5,6 +5,42 @@ namespace LeetCode
 {
     class AlgoEasy
     {
+        //magicIndex
+        public static int magicIndex(int[] arr)
+        {
+            int l = 0, r = arr.Length - 1;
+            return magicIndex(arr, l, r);
+        }
+
+        private static int magicIndex(int[] arr, int l, int r)
+        {
+
+            int m = (l + r) / 2;
+            if (m == arr[m]) return m;
+            if (m > arr[m])
+            {
+                return magicIndex(arr, m+1, r);
+            }
+            return magicIndex(arr, l, m-1);
+        }
+
+
+        //child is running up a staircase with n steps, and can hop 1-3steps at a time. how many possible ways can the child move up
+        public static int stairs(int n)
+        {
+            int[] mem = new int[n+1];
+            Array.Fill(mem, -1);
+            return stairs(n, mem);
+        }
+
+        private static int stairs(int n, int[] mem)
+        {
+            if (n < 0) return 0;
+            if (n == 0) return 1;
+            if (mem[n] > -1) return mem[n];
+            if (mem[n] == -1) mem[n] = stairs(n-1, mem) + stairs(n-2, mem) + stairs(n-3,mem);
+            return mem[n];
+        }
 
         public static int dpFib(int n)
         {
@@ -14,7 +50,7 @@ namespace LeetCode
         public static int dpFib(int n, int[] fibs)
         {
             if (n == 0 || n == 1) return n;
-            if (fibs[n] == 0) fibs[n] = dpFib(n - 1) + dpFib(n - 2);
+            if (fibs[n] == 0) fibs[n] = dpFib(n - 1, fibs) + dpFib(n - 2, fibs);
             return fibs[n];
         }
         public static int mskcc(string S)
