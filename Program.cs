@@ -8,11 +8,91 @@ namespace LeetCode
     {
         static void Main(string[] args)
         {
+            int[] arr = { -5, 2, -2, 4, 3, 1};
+            Console.WriteLine(SortStack(new List<int>(arr)));
 
 
-            Console.WriteLine(ReverseWords(new char[] { 'p', 'e', 'r', 'f', 'e', 'c', 't', ' ',
-                'm', 'a', 'k', 'e', 's', ' ',
-                'p', 'r', 'a', 'c', 't', 'i', 'c', 'e' }));
+        }
+        public static List<int> SortStack(List<int> stack)
+        {
+            // Write your code here.
+            List<int> list = new List<int>();
+            for (int i = stack.Count - 1; i > -1; i--)
+            {
+                list.Add(stack[i]);
+                stack.RemoveAt(i);
+            }
+
+            stack.Add(list[0]);
+            list.RemoveAt(0);
+
+            while (list.Count > 0)
+            {
+                int curr = list[0];
+                List<int> mem = new List<int>();
+                for (int i = stack.Count - 1; i > -1; i--)
+                {
+                    if (stack[i] < curr)
+                    {
+                        stack.Add(curr);
+                        mem.Reverse();
+                        foreach (int x in mem)
+                        {
+                            stack.Add(x);
+                        }
+                        break;
+                    }
+                    else
+                    {
+
+                        int pop = stack[stack.Count - 1];
+                        stack.RemoveAt(stack.Count - 1);
+                        mem.Add(pop);
+                        if (i == 0)
+                        {
+                            stack.Add(curr);
+                            mem.Reverse();
+                            foreach (int x in mem)
+                            {
+                                stack.Add(x);
+                            }
+                            break;
+                        }
+                    }
+                }
+                list.RemoveAt(0);
+            }
+            return stack;
+        }
+        public static int[] MeetingPlanner(int[,] slotsA, int[,] slotsB, int dur)
+        {
+            // your code goes here
+
+            int a = 0, b = 0;
+
+            while (a < slotsA.Length/2 && b < slotsB.Length)
+            {
+                int aST = slotsA[a, 0], aET = slotsA[a, 1];
+                int bST = slotsB[b, 0], bET = slotsB[b, 1];
+
+                if (aST < bET && bST < aET)
+                {
+                    int st = Math.Max(aST, bST);
+                    int et = Math.Min(aET, bET);
+                    if (et - st >= dur) return new int[] { st, st + dur };
+
+                }
+                if (aET < bET)
+                {
+                    a++;
+                }
+                else
+                {
+                    b++;
+                }
+            }
+            return new int[] { };
+
         }
         public static char[] ReverseWords(char[] arr)
         {/*
