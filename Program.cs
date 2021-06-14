@@ -8,10 +8,104 @@ namespace LeetCode
     {
         static void Main(string[] args)
         {
-            int[] arr = { -5, 2, -2, 4, 3, 1};
-            Console.WriteLine(SortStack(new List<int>(arr)));
+            string path = "/../../foo/bar/baz";
+            Console.WriteLine(ShortenPath(path));
 
+        }
+        public static string ShortenPath(string path)
+        {
+            // Write your code here;
+            StringBuilder curr = new StringBuilder();
+            Stack<string> stack = new Stack<string>();
+            for (int i = 0; i < path.Length; i++)
+            {
+                if (path[i] == '/' || i == path.Length - 1)
+                {
+                    if (i == path.Length - 1 || i == 0) curr.Append(path[i]);
+                    string dir = curr.ToString();
+                    if (dir.Length > 0) stack.Push(dir);
+                    if (dir == "..")
+                    {
+                        if (stack.Count > 0) stack.Pop();
+                        if (stack.Count > 0) stack.Pop();
+                    }
+                    else if (dir == ".")
+                    {
+                        if (stack.Count > 0) stack.Pop();
+                    }
+                    curr.Clear();
+                }
+                else
+                {
+                    curr.Append(path[i]);
+                }
+            }
+            StringBuilder ans = new StringBuilder();
+            List<string> list = new List<string>();
+            foreach (string s in stack)
+            {
+                list.Add(s);
+            }
+            list.Reverse();
+            for (int i = 0; i < list.Count; i++)
+            {
+                ans.Append(list[i]);
+                if (i == 0 && list[i] == "/")
+                {
+                    continue;
+                }
+                if (i == list.Count - 1) continue;
+                ans.Append("/");
+            }
+            return ans.ToString();
+        }
+        public static int[] NextGreaterElement(int[] array)
+        {
+            int[] ans = new int[array.Length];
+            Array.Fill(ans, -1);
+            for (int i = 0; i < array.Length; i++)
+            {
+                int curr = array[i];
+                int x = 0;
+                int j = i;
+                while (x < array.Length - 1)
+                {
+                    if (j == array.Length) j = 0;
+                    if (array[j] > curr)
+                    {
+                        ans[i] = array[j];
+                        break;
+                    }
+                    x++;
+                    j++;
+                }
+            }
 
+            return ans;
+        }
+
+        public static int binarySearch(int[] arr, int l, int r, int target)
+        {
+            while (l < r)
+            {
+                int m = (l + r) / 2;
+                if (target > arr[m])
+                {
+                    return binarySearch(arr, m + 1, r, target);
+                }
+                else if (target < arr[m])
+                {
+                    return binarySearch(arr, l, m - 1, target);
+                }
+                return m;
+            }
+            return 0;
+        }
+        public static void reverse(ref string s, int start, int end)
+        {
+            char[] arr = s.ToCharArray();
+            Array.Reverse(arr, start, end - start);
+            s = new string(arr);
         }
         public static List<int> SortStack(List<int> stack)
         {
