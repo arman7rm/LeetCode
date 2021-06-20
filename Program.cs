@@ -8,8 +8,13 @@ namespace LeetCode
     {
         static void Main(string[] args)
         {
-            string path = "/../../foo/bar/baz";
-            Console.WriteLine(ShortenPath(path));
+            Node n = new Node(7);
+            Node x = new Node(5);
+            x.next = new Node(9);
+            x.next.next = new Node(2);
+            n.next = new Node(1);
+            n.next.next = new Node(6);
+            CTCILinkedList.sumLists(n, x);
 
         }
         public static string ShortenPath(string path)
