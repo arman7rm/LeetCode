@@ -12,8 +12,8 @@ namespace LeetCode
             List<int> list = new List<int>();
             while (runner.next != null)
             {
-                list.Add(runner.data);
-                if (list.Contains(runner.next.data))
+                list.Add((int)runner.data);
+                if (list.Contains((int)runner.next.data))
                 {
                     runner.next = runner.next.next;
                 }
@@ -63,14 +63,14 @@ namespace LeetCode
 
             while(n != null)
             {
-                if(n.data < x)
+                if((int)n.data < x)
                 {
-                    left.next = new Node(n.data);
+                    left.next = new Node((int)n.data);
                     left = left.next;
                 }
                 else
                 {
-                    right.next = new Node(n.data);
+                    right.next = new Node((int)n.data);
                     right = right.next;
                 }
                 n = n.next;
@@ -88,14 +88,14 @@ namespace LeetCode
             int sumA = 0, sumB = 0, p = 0;
             while(a != null)
             {
-                sumA += (int)Math.Pow(10, p) * a.data;
+                sumA += (int)Math.Pow(10, p) * (int)a.data;
                 a = a.next;
                 p++;
             }
             p = 0;
             while(b != null)
             {
-                sumB += (int)Math.Pow(10, p) * b.data;
+                sumB += (int)Math.Pow(10, p) * (int)b.data;
                 b = b.next;
                 p++;
             }
@@ -110,6 +110,57 @@ namespace LeetCode
                 ans = ans.next;
             }
             Console.Write(ans.data);
+        }
+
+        public static bool palindromeLinkedList(Node n)
+        {
+            StringBuilder s = new StringBuilder();
+            while(n != null)
+            {
+                s.Append(n.data);
+                n = n.next;
+            }
+            string word = s.ToString();
+            for(int i = 0; i < word.Length/2; i++)
+            {
+                if (word[i] != word[word.Length - i - 1]) return false;
+            }
+            return true;
+        }
+
+        public static Node? intersection(Node a, Node b)
+        {
+            Stack<Node> s1 = new Stack<Node>();
+            Stack<Node> s2 = new Stack<Node>();
+            while (a != null)
+            {
+                s1.Push(a);
+                a = a.next;
+            }
+            while (b != null)
+            {
+                s2.Push(b);
+                b = b.next;
+            }
+            Node prev = null;
+            while(s1.Count > 0 && s2.Count > 0)
+            {
+                if (s1.Peek() != s2.Peek()) return prev;
+                prev = s1.Pop();
+                s2.Pop();
+            }
+            return null;
+        }
+
+        public static Node circularLinkedList(Node n)
+        {
+            List<Node> list = new List<Node>();
+            while (!list.Contains(n))
+            {
+                list.Add(n);
+                n = n.next;
+            }
+            return n;
         }
     }
 }

@@ -1,21 +1,334 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LeetCode
 {
     class Program
     {
+
         static void Main(string[] args)
         {
-            Node n = new Node(7);
-            Node x = new Node(5);
-            x.next = new Node(9);
-            x.next.next = new Node(2);
-            n.next = new Node(1);
-            n.next.next = new Node(6);
-            CTCILinkedList.sumLists(n, x);
+            List<int[]> list = new List<int[]>();
 
+            list.Add(new int[] { 259, 770 });
+            list.Add(new int[] {448, 54 });
+            list.Add(new int[] { 926, 667 });
+            list.Add(new int[] { 184, 139 });
+            list.Add(new int[] { 840, 118 });
+            list.Add(new int[] { 577, 469 });
+
+            Console.WriteLine(minCostsFlights(list)) ;
+        }
+
+        public void FindSecretWord(string[] wordlist, Master master)
+        {
+            int guesses = 10;
+            int i = 0;
+            List<string> list = new List<string>(wordlist);
+            List<string> guessed = new List<string>();
+
+            while (guesses > 0)
+            {
+                int m = 0;
+                while (guessed.Contains(list[m]))
+                {
+                    m++;
+                }
+                int matches = master.guess(list[m]);
+                guessed.Add(list[m]);
+                if (matches == 6) return;
+                List<string> toRemove = new List<string>();
+                for (int j = 0; j < list.Count; j++)
+                {
+                    if (numOfMatches(list[0], list[j]) < matches) toRemove.Add(list[j]);
+                }
+                foreach (string x in toRemove)
+                {
+                    list.Remove(x);
+                }
+                if (list.Count == 0) break;
+                guesses--;
+            }
+
+        }
+
+        public static int numOfMatches(string a, string b)
+        {
+            int matches = 0;
+
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i] == b[i]) matches++;
+            }
+
+            return matches;
+        }
+
+        public static int minCostsFlights(List<int[]> costs)
+        {
+            int total = 0;
+            SortedDictionary<int, int> map = new SortedDictionary<int, int>();
+            int user = 1;
+            int i = 1;
+            foreach(int[] flights in costs)
+            {
+                int diff = Math.Abs(flights[0]-flights[1]);
+                if (map.ContainsKey(diff))
+                {
+                    map.Add(diff-i, user);
+                    i++;
+                }
+                else
+                {
+                    map.Add(diff, user);
+                }
+                user++;
+            }
+            int cityA = 0, cityB = 0;
+            foreach(var x in map.Reverse())
+            {
+                if(costs[x.Value-1][0]< costs[x.Value - 1][1])
+                {
+                    if(cityA < costs.Count / 2)
+                    {
+                        cityA++;
+                        total += costs[x.Value - 1][0];
+                    }
+                    else
+                    {
+                        cityB++;
+                        total += costs[x.Value - 1][1];
+                    }
+                }
+                else
+                {
+                    if (cityB < costs.Count / 2)
+                    {
+                        cityB++;
+                        total += costs[x.Value - 1][1];
+                    }
+                    else
+                    {
+                        cityA++;
+                        total += costs[x.Value - 1][0];
+                    }
+                }
+            }
+
+            return total;
+        }
+        public class LRUCache
+        {
+
+            public int cap;
+            public Dictionary<int, LinkedListNode<int>> map;
+            public LinkedList<int> list;
+
+            public LRUCache(int capacity)
+            {
+                this.cap = capacity;
+                this.map = new Dictionary<int, LinkedListNode<int>>();
+                this.list = new LinkedList<int>();
+            }
+
+            public int Get(int key)
+            {
+                if (map.ContainsKey(key))
+                {
+                    int val = map[key].Value;
+                    list.Remove(map[key]);
+                    list.AddLast(val);
+                    map[key] = list.Last;
+                    return map[key].Value;
+                }
+                return -1;
+            }
+
+            public void Put(int key, int value)
+            {
+                if (map.ContainsKey(key))
+                {
+                    list.Remove(map[key]);
+                    list.AddLast(value);
+                    map[key] = list.Last;
+                }
+                else
+                {
+                    if (map.Count == cap)
+                    {
+                        foreach (KeyValuePair<int, LinkedListNode<int>> kvp in map)
+                        {
+                            if (kvp.Value == list.First)
+                            {
+                                map.Remove(kvp.Key);
+                                break;
+                            }
+                        }
+                        list.RemoveFirst();
+                    }
+                    list.AddLast(value);
+                    map.Add(key, list.Last);
+                }
+            }
+        }
+        public static List<int> TopologicalSort(List<int> jobs, List<int[]> deps)
+        {
+            // Write your code here.
+            List<node> list = new List<node>();
+            foreach (int job in jobs)
+            {
+                node n = new node(job);
+                foreach (int[] pair in deps)
+                {
+                    if (pair[1] == n.val)
+                    {
+                        n.prereqs.Add(pair[0]);
+                    }
+                }
+                list.Add(n);
+            }
+            List<int> ans = new List<int>();
+            foreach (node n in list)
+            {
+                if (n.prereqs.Count == 0)
+                {
+                    ans.Add(n.val);
+                    n.visited = true;
+                }
+            }
+            if (ans.Count == 0)
+            {
+                return new List<int>();
+            }
+            while (ans.Count < list.Count)
+            {
+                foreach (node n in list)
+                {
+                    if (!n.visited)
+                    {
+                        bool valid = true;
+                        foreach (int x in n.prereqs)
+                        {
+                            if (!ans.Contains(x)) valid = false;
+                        }
+                        if (valid)
+                        {
+                            ans.Add(n.val);
+                            n.visited = true;
+                        }
+                    }
+                }
+            }
+            return ans;
+        }
+
+        public class node
+        {
+            public bool visited;
+            public int val;
+            public List<int> prereqs;
+
+            public node(int val)
+            {
+                this.visited = false;
+                this.val = val;
+                this.prereqs = new List<int>();
+            }
+        }
+        public class Master
+        {
+            public string a = "azzzzz";
+            public Master()
+            {
+
+            }
+            public int Guess(string b)
+            {
+                int x = 0;
+                for (int i = 0; i < this.a.Length; i++)
+                {
+                    if (this.a[i] == b[i]) x++;
+                }
+                return x;
+            }
+        }
+        public static void FindSecretWord(string[] wordlist, Master master)
+        {
+            Array.Sort(wordlist);
+            List<string> list = new List<string>(wordlist);
+
+            int guesses = 0;
+            while (guesses < 10 && list.Count > 0)
+            {
+                guesses++;
+                var dict = new Dictionary<string, int>(); // key the word, value, # of zero matchese
+                foreach (var word1 in list)
+                {
+                    foreach (var word2 in list)
+                    {
+                        if (countMatches(word1, word2) == 0)
+                        {
+                            if (dict.ContainsKey(word1))
+                            {
+                                dict[word1] += 1;
+                            }
+                            else
+                            {
+                                dict[word1] = 1;
+                            }
+                        }
+                    }
+                }
+                int min = Int32.MaxValue;
+                string guess = list[0];
+                foreach (string word in dict.Keys)
+                {
+                    if (dict[word] < min)
+                    {
+                        guess = word;
+                        min = dict[word];
+                    }
+                }
+                int numOfLettersMatched = master.Guess(guess);
+                List<string> rem = new List<string>();
+                foreach (string word in list)
+                {
+                    if (countMatches(guess, word) != numOfLettersMatched) rem.Add(word);
+                }
+                foreach (string z in rem)
+                {
+                    list.Remove(z);
+                }
+            }
+        }
+
+        public static int countMatches(string a, string b)
+        {
+            int x = 0;
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i] == b[i]) x++;
+            }
+            return x;
+
+        }
+        public static int Fib(int n, int[] mem)
+        {
+            if(n == 0)
+            {
+                return 1;
+            }
+            if(n == 1)
+            {
+                return 1;
+            }
+            if (mem[n] == 0)
+            {
+                mem[n] = mem[n-1] + mem[n-2];
+            }
+            return mem[n];
         }
         public static string ShortenPath(string path)
         {

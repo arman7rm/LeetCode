@@ -6,9 +6,14 @@ namespace LeetCode
 {
     class Node
     {
-        public int data;
+        public object data;
         public Node next;
 
+        public Node(char x)
+        {
+            data = x;
+            next = null;
+        }
         public Node(int x)
         {
             data = x;
