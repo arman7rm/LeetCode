@@ -10,48 +10,246 @@ namespace LeetCode
 
         static void Main(string[] args)
         {
-            List<int[]> list = new List<int[]>();
+            var blocks = new List<Dictionary<string, bool>>();
+            
+            var first = new Dictionary<string, bool>();
+            first.Add("gym", false);
+            first.Add("school", true);
+            first.Add("store", false);
+            blocks.Add(first);
 
-            list.Add(new int[] { 259, 770 });
-            list.Add(new int[] {448, 54 });
-            list.Add(new int[] { 926, 667 });
-            list.Add(new int[] { 184, 139 });
-            list.Add(new int[] { 840, 118 });
-            list.Add(new int[] { 577, 469 });
+            var second = new Dictionary<string, bool>();
+            second.Add("gym", true);
+            second.Add("school", false);
+            second.Add("store", false);
+            blocks.Add(second);
 
-            Console.WriteLine(minCostsFlights(list)) ;
+            var third = new Dictionary<string, bool>();
+            third.Add("gym", true);
+            third.Add("school", true);
+            third.Add("store", false);
+            blocks.Add(third);
+            
+            var fourth = new Dictionary<string, bool>();
+            fourth.Add("gym", false);
+            fourth.Add("school", true);
+            fourth.Add("store", false);
+            blocks.Add(fourth);
+
+            var fifth = new Dictionary<string, bool>();
+            fifth.Add("gym", false);
+            fifth.Add("school", true);
+            fifth.Add("store", true);
+            blocks.Add(fifth);
+
+            string[] reqs = {"gym","school","store" };
+            ApartmentHunting(blocks, reqs);
         }
-
-        public void FindSecretWord(string[] wordlist, Master master)
+        public static int ApartmentHunting(List<Dictionary<string, bool>> blocks, string[] reqs)
         {
-            int guesses = 10;
+            // Write your code here.
+            int minDist = Int32.MaxValue;
             int i = 0;
-            List<string> list = new List<string>(wordlist);
-            List<string> guessed = new List<string>();
-
-            while (guesses > 0)
+            int ans = -1;
+            foreach (var block in blocks)
             {
-                int m = 0;
-                while (guessed.Contains(list[m]))
-                {
-                    m++;
-                }
-                int matches = master.guess(list[m]);
-                guessed.Add(list[m]);
-                if (matches == 6) return;
-                List<string> toRemove = new List<string>();
-                for (int j = 0; j < list.Count; j++)
-                {
-                    if (numOfMatches(list[0], list[j]) < matches) toRemove.Add(list[j]);
-                }
-                foreach (string x in toRemove)
-                {
-                    list.Remove(x);
-                }
-                if (list.Count == 0) break;
-                guesses--;
-            }
+                bool invalid = false;
+                int totalDist = 0;
 
+                foreach (var building in reqs)
+                {
+                    bool foundRight = false;
+                    bool foundLeft = false;
+                    int dist = 0;
+
+                    for (int j = i; j < blocks.Count; j++)
+                    {
+                        if (blocks[j][building] == true)
+                        {
+                            foundRight = true;
+                            break;
+                        }
+                        dist++;
+                    }
+
+                    if (!foundRight) dist = Int32.MaxValue;
+
+                    int left = 0;
+                    for (int j = i; j > -1; j--)
+                    {
+                        var curr = blocks[j];
+                        if (curr[building])
+                        {
+                            foundLeft = true;
+                            break;
+                        }
+                        left++;
+                    }
+                    if (!foundLeft) left = Int32.MaxValue;
+                    if (!foundLeft && !foundRight)
+                    {
+                        invalid = true;
+                        break;
+                    }
+
+                    dist = (int)Math.Min(dist, left);
+                    totalDist += dist;
+                }
+
+                if (invalid)
+                {
+                    i++;
+                    continue;
+                }
+
+                if (minDist >= totalDist)
+                {
+                    minDist = totalDist;
+                    ans = i;
+                }
+                i++;
+            }
+            return ans;
+        }
+        public static int NumSplits(string s)
+        {
+            Dictionary<char, int> left = new Dictionary<char, int>();
+            Dictionary<char, int> right = new Dictionary<char, int>();
+            left.Add(s[0], 1);
+
+            for (int i = 1; i < s.Length; i++)
+            {
+                if (!right.ContainsKey(s[i]))
+                {
+                    right.Add(s[i], 0);
+                }
+                right[s[i]]++;
+            }
+            int count = 0;
+            for (int i = 1; i < s.Length - 1; i++)
+            {
+                right[s[i]]--;
+                if (right[s[i]] == 0) right.Remove(s[i]);
+                if (!left.ContainsKey(s[i]))
+                {
+                    left.Add(s[i], 0);
+                }
+                left[s[i]]++;
+                if (left.Count == right.Count) count++;
+            }
+            return count;
+        }
+        public static int VisiblePoints(int[][] points, int angle, List<int> location) { 
+        int maxPoints = 0;
+        List<double> list = new List<double>();
+        int seen = 0;
+        foreach (int[] point in points){
+            double opp = point[1] - location[1];
+        double adj = point[0] - location[0];
+            if (opp == 0 && adj == 0){
+                seen++;
+                continue;
+            }
+    double pointAngle = (Math.Atan2(opp, adj) * 180 / Math.PI);
+            
+            if(pointAngle<0){
+                pointAngle += 360;
+            }
+list.Add(pointAngle);
+        }
+        list.Sort();
+            int max = 0;
+            foreach(int p in list)
+            {
+                int cap = p+angle;
+                int count = 0;
+                foreach(int x in list)
+                {
+                    if (x >= p && x <= cap) count++;
+
+                }
+                if (count > max) max = count;
+            }
+            return max + seen;/*
+for (int d = 0; d < 360; d++)
+{
+    int visible = seen;
+
+    double leftAngle = d + (angle / 2);
+    double rightAngle = d - (angle / 2);
+    //45 . -45,
+    //350 = -10;
+    foreach (int pointAngle in list)
+    {
+        if (rightAngle < 0 && pointAngle > 180)
+        {
+            rightAngle += 360;
+            leftAngle += 360;
+        }
+        if (leftAngle >= pointAngle && rightAngle <= pointAngle) visible++;
+    }
+
+
+    if (visible > maxPoints) maxPoints = visible;
+}
+
+    return maxPoints;*/
+    }
+
+        public class master
+        {
+            string secret;
+            public int guess(string word)
+            {
+                this.secret = "azzzzz";
+                return numOfMatches(secret,word);
+            }
+        }
+        public static void FindSecretWord(string[] wordlist, master master)
+        {
+            var list = new List<string>(wordlist);
+
+            var guesses = 0;
+            while (guesses < 10)
+            {
+                guesses++;
+                var dict = new Dictionary<string, int>(); // key the word, value, # of zero matchese
+                foreach (var word1 in list)
+                {
+                    foreach (var word2 in list)
+                    {
+                        if (countMatches(word1, word2) == 0)
+                        {
+                            if (dict.ContainsKey(word1))
+                            {
+                                dict[word1] += 1;
+                            }
+                            else
+                            {
+                                dict.Add(word1, 1);
+                            }
+                        }
+                    }
+                }
+                var min = Int32.MaxValue;
+                var guess = list[0];
+                foreach (string word in dict.Keys)
+                {
+                    if (dict[word] < min)
+                    {
+                        guess = word;
+                        min = dict[word];
+                    }
+                }
+                var numOfLettersMatched = master.guess(guess);
+                if (numOfLettersMatched == 6) return;
+                var rem = new List<string>();
+                foreach (var word in list)
+                {
+                    if (countMatches(guess, word) == numOfLettersMatched) rem.Add(word);
+                }
+                list = rem;
+            }
         }
 
         public static int numOfMatches(string a, string b)
