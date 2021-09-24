@@ -10,7 +10,8 @@ namespace LeetCode
 
         static void Main(string[] args)
         {
-            
+            char[,] matrix = new char[,] { {'a', 'b', 'c' }, { 'd', 'e', 'f' }, { 'g', 'h', 'i' } };
+            arrays.rotateMatrix(matrix);
         }
         public static ListNode OddEvenList(ListNode head)
         {
