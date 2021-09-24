@@ -10,41 +10,159 @@ namespace LeetCode
 
         static void Main(string[] args)
         {
-            var blocks = new List<Dictionary<string, bool>>();
             
-            var first = new Dictionary<string, bool>();
-            first.Add("gym", false);
-            first.Add("school", true);
-            first.Add("store", false);
-            blocks.Add(first);
-
-            var second = new Dictionary<string, bool>();
-            second.Add("gym", true);
-            second.Add("school", false);
-            second.Add("store", false);
-            blocks.Add(second);
-
-            var third = new Dictionary<string, bool>();
-            third.Add("gym", true);
-            third.Add("school", true);
-            third.Add("store", false);
-            blocks.Add(third);
-            
-            var fourth = new Dictionary<string, bool>();
-            fourth.Add("gym", false);
-            fourth.Add("school", true);
-            fourth.Add("store", false);
-            blocks.Add(fourth);
-
-            var fifth = new Dictionary<string, bool>();
-            fifth.Add("gym", false);
-            fifth.Add("school", true);
-            fifth.Add("store", true);
-            blocks.Add(fifth);
-
-            string[] reqs = {"gym","school","store" };
-            ApartmentHunting(blocks, reqs);
         }
+        public static ListNode OddEvenList(ListNode head)
+        {
+            int skips = 1;
+            double count =0;
+            ListNode runner = head;
+            while (runner != null)
+            {
+                count++;
+                runner = runner.next;
+            }
+            runner = head;
+            ListNode evenHead = head.next;
+            double swaps = Math.Ceiling(count / 2);
+            while(skips < swaps)
+            {
+                ListNode runner2 = runner;
+                int skip = skips;
+                while(skip >= 0)
+                {
+                    runner2 = runner2.next;
+                    skip--;
+                }
+                ListNode even = evenHead;
+                while(even.next != runner2)
+                {
+                    even = even.next;
+                }
+                even.next = runner2.next;
+                runner.next = runner2;
+                runner = runner.next;
+                runner2.next = evenHead;
+                skips++;
+            }
+            return head;
+        }
+        public class ListNode
+        {
+          public int val;
+          public ListNode next;
+          public ListNode(int val = 0, ListNode next = null)
+          {
+            this.val = val;
+            this.next = next;
+          }
+        }
+        public class TreeNode
+        {
+            public int val;
+            public TreeNode left;
+            public TreeNode right;
+            public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
+            {
+                this.val = val;
+                this.left = left;
+                this.right = right;
+                     
+            }
+        }
+        public static bool postOrderTrav(TreeNode n)
+        {
+            if (n != null)
+            {
+                if (postOrderTrav(n.left)) n.left = null;
+                if (postOrderTrav(n.right)) n.right = null;
+                if (n.right == null && n.left == null)
+                {
+                    if (n.val == 0) return true;
+                }
+                return false;
+            }
+            return true;
+        }
+        public static string LicenseKeyFormatting(string s, int k)
+        {
+            s.Replace("-",string.Empty);
+            StringBuilder ans = new StringBuilder();
+            foreach(var c in s.ToUpper())
+            {
+                if (c != '-')
+                {
+                    ans.Append(c);
+                }
+            }
+            int count = 0;
+            for(int j=ans.Length-1; j>-1; j--)
+            {
+                count++;
+                if (j == 0)
+                {
+                    break;
+                }
+                if (count == k)
+                {
+                    count = 0;
+                    ans.Insert(j,'-');
+                }
+                
+            }
+            return ans.ToString();
+        }
+
+        public static IList<string> SummaryRanges(int[] nums)
+        {
+            
+            var ans = new List<string>();
+            if (nums.Length == 0) return ans;
+            if (nums.Length == 1)
+            {
+                ans.Add(""+nums[0]+"");
+                return ans;
+            }
+            int s = nums[0], e = nums[0];
+            int curr = s;
+            for (int i = 1; i < nums.Length; i++)
+            {
+
+                if ((nums[i]) > e + 1)
+                {
+                    if (s == e)
+                    {
+                        ans.Add("" + s + "");
+                    }
+                    else
+                    {
+                        ans.Add("" + s + "->" + e);
+                    }
+                    s = nums[i];
+                    e = nums[i];
+                }
+                else
+                {
+                    e++;
+                    if (i == nums.Length - 1)
+                    {
+                        ans.Add("" + s + "->" + e);
+                    }
+                }
+            }
+            if (s == e) ans.Add("" + s + "");
+
+            return ans;
+        }
+        public static bool isPalindrome(string s)
+        {
+            for (int i = 0; i < s.Length / 2; i++)
+            {
+                if (s[i] != s[^(i + 1)]) return false;
+            }
+            return true;
+        }
+
         public static int ApartmentHunting(List<Dictionary<string, bool>> blocks, string[] reqs)
         {
             // Write your code here.
